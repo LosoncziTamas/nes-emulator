@@ -1,6 +1,9 @@
 #![allow(unused)]
 
+use crate::common::mem_trait::Mem;
+use crate::ram::bus::Bus;
 use crate::nes_instructions::instruction_list::Codes;
+
 
 fn load_accumulator(cpu: &mut CPU, data: u8) {
     cpu.program_counter += 1;
@@ -49,7 +52,26 @@ pub struct CPU {
     pub status: u8,
     pub program_counter: u16,
     pub register_x: u8,
-    memory: [u8; 0xFFFF]
+    memory: [u8; 0xFFFF],
+    pub bus: Bus,
+}
+
+impl Mem for CPU {
+    fn read(&self, addr: u16) -> u8 {
+        self.bus.read(addr)
+    }
+
+    fn write(&mut self, addr: u16, data: u8) {
+        self.bus.write(addr, data)
+    }
+
+    fn read_u16(&self, loc: u16) -> u16 {
+        self.bus.read_u16(loc)
+    }
+
+    fn write_u16(&mut self, loc: u16, pck: u16) {
+        self.bus.write_u16(loc, pck)
+    }
 }
 
 impl CPU {
@@ -59,7 +81,8 @@ impl CPU {
             status: 0,
             program_counter: 0,
             register_x: 0,
-            memory: [0; 0xFFFF]
+            memory: [0; 0xFFFF],
+            bus: Bus::new(),
         }
     }
 
