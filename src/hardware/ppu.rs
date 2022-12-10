@@ -83,6 +83,10 @@ impl NesPPU {
         }
     }
 
+    fn write_data(&mut self, value: u8) {
+        todo!("");
+    }
+
     /// Horizontal:
     ///   [ A ] [ a ]
     ///   [ B ] [ b ]
