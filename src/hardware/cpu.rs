@@ -2,10 +2,10 @@
 
 use crate::nes_instructions::instruction_list::Codes;
 
-fn load_accumulator(cpu: &mut CPU, op_param: u8) {
+fn load_accumulator(cpu: &mut CPU, data: u8) {
     cpu.program_counter += 1;
-    cpu.register_a = op_param;
-
+    cpu.register_a = data;
+    println!("{}", data);
     if cpu.register_a == 0 {
         cpu.status = cpu.status | 0b0000_0010;
     } else {
@@ -23,7 +23,8 @@ fn make_code(u8op: u8) -> Codes {
     match u8op {
         0xA9 => Codes::Lda,
         0x00 => Codes::Brk,
-        _ => panic!("Unknown code {}", u8op),
+        0x05 => Codes::Nll,
+        _ => todo!("")
     }
 }
 
@@ -43,16 +44,24 @@ impl CPU {
         }
     }
 
-    pub fn interpret(&mut self, program: Vec<u8>) {
+    pub fn interpret(&mut self, mut program: Vec<u8>) {
         self.program_counter = 0;
 
         loop {
             let opcode = program[self.program_counter as usize];
+            println!("{}", opcode);
+            let mut data: u8 = 0;
             self.program_counter += 1;
+            let counter = self.program_counter as usize;
+            if (program.len() > counter)
+            {
+                data = program[counter];
+            }
             let op = make_code(opcode);
             match op {
-                Codes::Lda => {load_accumulator(self, opcode );}
+                Codes::Lda => {load_accumulator(self, data );}
                 Codes::Brk => { return; }
+                Codes::Nll => { continue; }
                 _ => todo!()
             }
         }
