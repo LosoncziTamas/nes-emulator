@@ -1,7 +1,7 @@
-trait Mem {
+pub trait Mem {
     fn read(&self, addr: u16) -> u8;
 
-    fn write(&self, addr: u16, data: u8);
+    fn write(&mut self, addr: u16, data: u8);
 
     fn read_u16(&self, loc: u16) -> u16 {
         let lo = self.read(loc) as u16;
