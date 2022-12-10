@@ -1,4 +1,4 @@
-use crate::ram::bus::Mirroring;
+use crate::ram::bus::{Mirroring, RAM_REG, RAM_MIRROR_ENDS, PPU_MIRROR_ENDS, PPU_REG};
 use super::ppu_addr_register::AddrRegister;
 use super::ppu_cntrl_register::ControlRegister;
 
@@ -56,12 +56,12 @@ impl NesPPU {
         self.increment_vram_addr();
 
         match addr {
-            0..=0x1fff => {
+            RAM_REG ..= RAM_MIRROR_ENDS => {
                 let result = self.internal_data_buf;
                 self.internal_data_buf = self.chr_rom[addr as usize];
                 result
             }
-            0x2000..=0x2fff => {
+            PPU_REG..=0x2fff => {
                 let result = self.internal_data_buf;
                 self.internal_data_buf = self.vram[self.mirror_vram_addr(addr) as usize];
                 result
@@ -70,7 +70,7 @@ impl NesPPU {
                 "addr space 0x3000..0x3eff is not expected to be used, requested = {} ",
                 addr
             ),
-            0x3f00..=0x3fff => self.palette_table[(addr - 0x3f00) as usize],
+            0x3f00..=PPU_MIRROR_ENDS => self.palette_table[(addr - 0x3f00) as usize],
             _ => panic!("unexpected access to mirrored space {}", addr),
         }
     }

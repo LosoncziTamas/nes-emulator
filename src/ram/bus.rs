@@ -14,10 +14,10 @@ pub struct Rom{
     pub screen_mirroring: Mirroring
 }
 
-const RAM_REG: u16 = 0x0000;
-const RAM_MIRROR_ENDS: u16 = 0x1FFF;
-const PPU_REG: u16 = 0x2000;
-const PPU_MIRROR_ENDS: u16 = 0x3FFF;
+pub const RAM_REG: u16 = 0x0000;
+pub const RAM_MIRROR_ENDS: u16 = 0x1FFF;
+pub const PPU_REG: u16 = 0x2000;
+pub const PPU_MIRROR_ENDS: u16 = 0x3FFF;
 
 pub struct Bus {
     cpu_vram: [u8; 2048],
