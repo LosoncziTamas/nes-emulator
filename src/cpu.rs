@@ -1,3 +1,16 @@
+#![allow(unused)]
+
+
+use instru::{Instructions};
+
+fn load_accumulator(cpu: &mut CPU) {
+    todo!();
+}
+
+fn map_instructions_to_number() {
+    todo!();
+}
+
 pub struct CPU {
     pub register_a: u8,
     pub status: u8,
@@ -14,12 +27,20 @@ impl CPU {
         }
     }
 
-    pub fn interpret(&mut self, program: Vec<u8>) {
-        todo!("")
+    pub fn interpret(&mut self, program: Vec<Instructions>) {
+        self.program_counter = 0;
+
+        loop {
+            let opcode = program[self.program_counter as usize];
+            self.program_counter += 1;
+
+            match opcode {
+                Instructions::Lda => {load_accumulator(self);},
+                _ => todo!(),
+            }
+        }
     }
 }
 
 
-fn main() {
-    let cpu = CPU::new();
-}
+
