@@ -1,15 +1,12 @@
 #![allow(unused)]
 
-
-mod cpu;
-//use cpu::{CPU};
-mod instru;
-//use instru::{Instructions};
+mod hardware;
+mod nes_instructions;
 
 fn main() {
     println!("Hello, world!");
-    let mut cpu = cpu::CPU::new();
+    let mut cpu = hardware::cpu::CPU::new();
     let mut prog = Vec::new();
-    prog.push(instru::Instructions::Lda);
+    prog.push(nes_instructions::instruction_list::Codes::Lda);
     cpu.interpret(prog);
 }

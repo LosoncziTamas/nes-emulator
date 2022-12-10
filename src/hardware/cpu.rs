@@ -1,7 +1,6 @@
 #![allow(unused)]
 
-
-use instru::{Instructions};
+use crate::nes_instructions::instruction_list::Codes;
 
 fn load_accumulator(cpu: &mut CPU) {
     todo!();
@@ -27,7 +26,7 @@ impl CPU {
         }
     }
 
-    pub fn interpret(&mut self, program: Vec<Instructions>) {
+    pub fn interpret(&mut self, program: Vec<Codes>) {
         self.program_counter = 0;
 
         loop {
@@ -35,7 +34,7 @@ impl CPU {
             self.program_counter += 1;
 
             match opcode {
-                Instructions::Lda => {load_accumulator(self);},
+                Codes::Lda => {load_accumulator(self);},
                 _ => todo!(),
             }
         }

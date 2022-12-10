@@ -1,4 +1,4 @@
 #[derive(Copy, Clone)]
-pub enum Instructions {
+pub enum Codes {
     Lda = 0xA9,
 }
