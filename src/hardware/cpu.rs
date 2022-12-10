@@ -19,10 +19,27 @@ fn load_accumulator(cpu: &mut CPU, data: u8) {
     }
 }
 
+fn transfer_accumulator_to_x(cpu: &mut CPU) {
+    cpu.register_x = cpu.register_a;
+
+    if (cpu.register_x == 0) {
+        cpu.status = cpu.status | 0b0000_0010;
+    } else {
+        cpu.status = cpu.status & 0b1111_1101;
+    }
+
+    if (cpu.register_x & 0b1000_0000 != 0) {
+        cpu.status = cpu.status | 0b1000_0000;
+    } else {
+        cpu.status = cpu.status & 0b0111_1111;
+    }
+}
+
 fn make_code(u8op: u8) -> Codes {
     match u8op {
         0xA9 => Codes::Lda,
         0x00 => Codes::Brk,
+        0xAA => Codes::Tax,
         0x05 => Codes::Nll,
         _ => todo!("")
     }
@@ -32,7 +49,7 @@ pub struct CPU {
     pub register_a: u8,
     pub status: u8,
     pub program_counter: u16,
-
+    pub register_x: u8
 }
 
 impl CPU {
@@ -41,6 +58,7 @@ impl CPU {
             register_a: 0,
             status: 0,
             program_counter: 0,
+            register_x: 0
         }
     }
 
@@ -61,6 +79,7 @@ impl CPU {
             match op {
                 Codes::Lda => {load_accumulator(self, data );}
                 Codes::Brk => { return; }
+                Codes::Tax => { transfer_accumulator_to_x(self); }
                 Codes::Nll => { continue; }
                 _ => todo!()
             }
