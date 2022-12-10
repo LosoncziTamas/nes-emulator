@@ -1,4 +1,5 @@
-use crate::ram::bus::{Mirroring, RAM_REG, RAM_MIRROR_ENDS, PPU_MIRROR_ENDS, PPU_REG};
+use crate::cartridge::rom::Mirroring;
+use crate::ram::bus::{RAM_REG, RAM_MIRROR_ENDS, PPU_MIRROR_ENDS, PPU_REG};
 use super::ppu_addr_register::AddrRegister;
 use super::ppu_cntrl_register::ControlRegister;
 

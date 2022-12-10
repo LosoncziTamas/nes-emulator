@@ -5,6 +5,7 @@ mod hardware;
 mod nes_instructions;
 mod ram;
 mod test;
+mod cartridge;
 
 fn main() {
     println!("Iron world!");

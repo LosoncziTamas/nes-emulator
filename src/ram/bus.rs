@@ -1,20 +1,6 @@
+use crate::cartridge::rom::Rom;
 use crate::hardware::ppu::NesPPU;
 use crate::common::mem_trait::Mem;
-
-// TODO: remove this when merged with cartridge code
-#[derive(Debug, PartialEq)]
-pub enum Mirroring {
-    Vertical,
-    Horizontal,
-    FourScreen,
-}
-
-// TODO: remove dummy rom when merged with actual one
-pub struct Rom{
-    pub chr_rom: Vec<u8>,
-    pub prg_rom: Vec<u8>,
-    pub screen_mirroring: Mirroring
-}
 
 pub const RAM_REG: u16 = 0x0000;
 pub const RAM_MIRROR_ENDS: u16 = 0x1FFF;
@@ -23,7 +9,7 @@ pub const PPU_MIRROR_ENDS: u16 = 0x3FFF;
 
 pub struct Bus {
     cpu_vram: [u8; 2048],
-    prg_rom: Vec<u8>,
+    rom: Rom,
     ppu: NesPPU
 }
 
@@ -33,9 +19,17 @@ impl Bus {
 
         Bus {
             cpu_vram: [0; 2048],
-            prg_rom: rom.prg_rom,
+            rom: rom,
             ppu: ppu,
         }
+    }
+
+    fn read_prg_rom(&self, mut addr: u16) -> u8 {
+        addr -= 0x8000;
+        if self.rom.prg_rom.len() == 0x4000 && addr >= 0x4000 {
+            addr = addr % 0x4000;
+        }
+        self.rom.prg_rom[addr as usize]
     }
 }
 
@@ -54,14 +48,13 @@ impl Mem for Bus {
                 let mirror_down_addr = addr & 0b00100000_00000111;
                 self.read(mirror_down_addr)
             }
-            //TODO: implement read from rom 0x8000..=0xFFFF => self.read_prg_rom(addr),
+            0x8000..=0xFFFF => self.read_prg_rom(addr),
             _ => {
                 println!("[READ] Unregistered memory access at {}", addr);
                 0
             }
         }
     }
-
 
     fn write(&mut self, addr: u16, data: u8) {
         match addr {
