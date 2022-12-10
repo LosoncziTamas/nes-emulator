@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+mod common;
 mod hardware;
 mod nes_instructions;
 mod test;
