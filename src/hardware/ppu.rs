@@ -1,13 +1,6 @@
+use crate::ram::bus::Mirroring;
 use super::ppu_addr_register::AddrRegister;
 use super::ppu_cntrl_register::ControlRegister;
-
-// TODO: remove this when merged with cartridge code
-#[derive(Debug, PartialEq)]
-pub enum Mirroring {
-    Vertical,
-    Horizontal,
-    FourScreen,
-}
 
 const VRAM_MAX_SIZE: usize = 2048;
 const OAM_DATA_MAX_SIZE: usize = 256;
@@ -28,7 +21,6 @@ pub struct NesPPU {
     pub ctrl: ControlRegister,
     /// internal buffer filled during the previous load operation
     pub internal_data_buf: u8,
-
     pub mirroring: Mirroring,
 }
 
@@ -46,11 +38,11 @@ impl NesPPU {
         }
     }
 
-    fn write_to_ppu_addr(&mut self, value: u8) {
+    pub fn write_to_ppu_addr(&mut self, value: u8) {
         self.addr.update(value);
     }
 
-    fn write_to_ctrl(&mut self, value: u8) {
+    pub fn write_to_ctrl(&mut self, value: u8) {
         self.ctrl.update(value);
     }
 
@@ -59,7 +51,7 @@ impl NesPPU {
     }
 
     /// read or write access to 0x2007 increments the PPU Address (0x2006)
-    fn read_data(&mut self) -> u8 {
+    pub fn read_data(&mut self) -> u8 {
         let addr = self.addr.get();
         self.increment_vram_addr();
 
@@ -83,7 +75,7 @@ impl NesPPU {
         }
     }
 
-    fn write_data(&mut self, value: u8) {
+    pub fn write_to_data(&mut self, value: u8) {
         todo!("");
     }
 
