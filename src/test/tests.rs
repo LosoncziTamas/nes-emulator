@@ -1,6 +1,6 @@
 
 use crate::hardware::cpu::CPU;
-use crate::ram::bus::{Bus, Mem};
+use crate::ram::bus::Bus;
 
 #[cfg(test)]
 mod tests {
@@ -36,27 +36,5 @@ mod tests {
         cpu.register_x = 1;
         cpu.interpret(vec![0xE8, 0x00]);
         assert_eq!(cpu.register_x, 2);
-    }
-
-    #[test]
-    fn invalid_ram_access() {
-        let invalid_ram_addr = 0x2457;
-        assert_eq!(0, Mem::read(invalid_ram_addr));
-    }
-
-    #[test]
-    fn read_ram_addr() {
-        let read_data: u8 = 0x24;
-        let mut bus = Bus::new();
-        bus.cpu_vram[1] = read_data;
-        assert!(0x24 == bus.read(0x0001));
-    }
-
-    #[test]
-    fn write_ram_addr() {
-        let write_data: u8 = 0x42;
-        let write_addr: u16 = 0x0001;
-        let mut bus = Bus::new();
-        assert!(0x42 == bus.write(write_addr, write_data));
     }
 }
