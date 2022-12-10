@@ -51,9 +51,9 @@ impl CPU {
             self.program_counter += 1;
             let op = make_code(opcode);
             match op {
-                Codes::Lda => {load_accumulator(self, opcode );},
-                Codes::Brk => { return; },
-                _ => todo!(),
+                Codes::Lda => {load_accumulator(self, opcode );}
+                Codes::Brk => { return; }
+                _ => todo!()
             }
         }
     }
