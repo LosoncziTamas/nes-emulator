@@ -1,7 +1,7 @@
-use crate::cartridge::rom::Mirroring;
-use crate::ram::bus::{RAM_REG, RAM_MIRROR_ENDS, PPU_MIRROR_ENDS, PPU_REG};
 use super::ppu_addr_register::AddrRegister;
 use super::ppu_cntrl_register::ControlRegister;
+use crate::cartridge::rom::Mirroring;
+use crate::ram::bus::{PPU_MIRROR_ENDS, PPU_REG, RAM_MIRROR_ENDS, RAM_REG};
 
 const VRAM_MAX_SIZE: usize = 2048;
 const OAM_DATA_MAX_SIZE: usize = 256;
@@ -57,7 +57,7 @@ impl NesPPU {
         self.increment_vram_addr();
 
         match addr {
-            RAM_REG ..= RAM_MIRROR_ENDS => {
+            RAM_REG..=RAM_MIRROR_ENDS => {
                 let result = self.internal_data_buf;
                 self.internal_data_buf = self.chr_rom[addr as usize];
                 result

@@ -1,16 +1,15 @@
 #![allow(unused)]
 
-
 #[macro_use]
 extern crate lazy_static;
 
+mod cartridge;
 mod common;
 mod hardware;
 mod nes_instructions;
+mod platform;
 mod ram;
 mod test;
-mod cartridge;
-mod platform;
 
 use platform::sdl;
 

@@ -1,6 +1,6 @@
 use crate::cartridge::rom::Rom;
-use crate::hardware::ppu::NesPPU;
 use crate::common::mem_trait::Mem;
+use crate::hardware::ppu::NesPPU;
 
 pub const RAM_REG: u16 = 0x0000;
 pub const RAM_MIRROR_ENDS: u16 = 0x1FFF;
@@ -10,7 +10,7 @@ pub const PPU_MIRROR_ENDS: u16 = 0x3FFF;
 pub struct Bus {
     cpu_vram: [u8; 2048],
     rom: Rom,
-    ppu: NesPPU
+    ppu: NesPPU,
 }
 
 impl Bus {
@@ -37,7 +37,7 @@ impl Bus {
 impl Mem for Bus {
     fn read(&mut self, addr: u16) -> u8 {
         match addr {
-            RAM_REG ..= RAM_MIRROR_ENDS => {
+            RAM_REG..=RAM_MIRROR_ENDS => {
                 let ram_mirror_down_addr = addr & 0b00000111_11111111;
                 self.cpu_vram[ram_mirror_down_addr as usize]
             }
@@ -45,7 +45,7 @@ impl Mem for Bus {
                 panic!("Attempt to read from write-only PPU address {:x}", addr);
             }
             0x2007 => self.ppu.read_data(),
-            0x2008 ..= PPU_MIRROR_ENDS => {
+            0x2008..=PPU_MIRROR_ENDS => {
                 let mirror_down_addr = addr & 0b00100000_00000111;
                 self.read(mirror_down_addr)
             }
@@ -59,7 +59,7 @@ impl Mem for Bus {
 
     fn write(&mut self, addr: u16, data: u8) {
         match addr {
-            RAM_REG ..= RAM_MIRROR_ENDS => {
+            RAM_REG..=RAM_MIRROR_ENDS => {
                 let ram_mirror_down_addr = addr & 0b00000111_11111111;
                 self.cpu_vram[ram_mirror_down_addr as usize] = data;
             }
@@ -96,7 +96,6 @@ impl Mem for Bus {
         self.write(loc + 1, hi);
     }
 }
-
 
 #[test]
 fn invalid_ram_access() {

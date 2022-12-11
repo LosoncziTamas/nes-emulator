@@ -2,9 +2,9 @@
 
 use crate::cartridge::rom::Rom;
 use crate::common::mem_trait::Mem;
-use crate::ram::bus::Bus;
-use crate::nes_instructions::instruction_list::Codes;
 use crate::nes_instructions::addressing_mode::AddressingMode;
+use crate::nes_instructions::instruction_list::Codes;
+use crate::ram::bus::Bus;
 
 const MEM_START: u16 = 0x8000;
 
@@ -24,7 +24,7 @@ fn increment_x_register(cpu: &mut CPU) {
     update_zero_and_negative_flags(cpu, cpu.register_x);
 }
 
-fn update_zero_and_negative_flags(cpu: &mut CPU, result: u8){
+fn update_zero_and_negative_flags(cpu: &mut CPU, result: u8) {
     if result == 0 {
         cpu.status = cpu.status | 0b0000_0010;
     } else {
@@ -45,7 +45,7 @@ fn make_code(u8op: u8) -> Codes {
         0xA9 => Codes::Lda,
         0xAA => Codes::Tax,
         0x05 => Codes::Zpg,
-        _ => panic!("Ran out of valid Codes!!!")
+        _ => panic!("Ran out of valid Codes!!!"),
     }
 }
 
@@ -118,7 +118,7 @@ impl CPU {
                 let lo = self.read(ptr as u16);
                 let hi = self.read(ptr.wrapping_add(1) as u16);
                 (hi as u16) << 8 | (lo as u16)
-            },
+            }
             AddressingMode::Indirect_Y => {
                 let lo = self.read(pos as u16);
                 let hi = self.read((pos as u8).wrapping_add(1) as u16);
@@ -139,7 +139,7 @@ impl CPU {
     }
 
     pub fn load(&mut self, program: Vec<u8>) {
-        self.memory[0x8000 .. (0x8000 + program.len())].copy_from_slice(&program[..]);
+        self.memory[0x8000..(0x8000 + program.len())].copy_from_slice(&program[..]);
         self.write_u16(0xFFC, MEM_START);
     }
 
@@ -147,13 +147,13 @@ impl CPU {
         self.status = 0;
         self.register_a = 0;
         self.register_x = 0;
-
+        self.register_y = 0;
 
         self.program_counter = self.read_u16(0xFFFC);
     }
 
     pub fn run(&mut self) {
-         loop {
+        loop {
             //let mut data: u8 = 0;
             let opcode = self.read(self.program_counter);
             self.program_counter += 1;
@@ -164,12 +164,22 @@ impl CPU {
             // }
             let op = make_code(opcode);
             match op {
-                Codes::Brk => { return; }
-                Codes::Inx => { increment_x_register(self); }
-                Codes::Lda => { load_accumulator(self ); }
-                Codes::Tax => { transfer_accumulator_to_x(self); }
-                Codes::Zpg => { continue; }
-                _ => todo!()
+                Codes::Brk => {
+                    return;
+                }
+                Codes::Inx => {
+                    increment_x_register(self);
+                }
+                Codes::Lda => {
+                    load_accumulator(self);
+                }
+                Codes::Tax => {
+                    transfer_accumulator_to_x(self);
+                }
+                Codes::Zpg => {
+                    continue;
+                }
+                _ => todo!(),
             }
         }
     }
@@ -177,9 +187,5 @@ impl CPU {
     pub fn interpret(&mut self, mut program: Vec<u8>) {
         self.program_counter = 0;
         todo!("remove from main")
-       
     }
 }
-
-
-

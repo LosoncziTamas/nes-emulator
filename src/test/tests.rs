@@ -1,4 +1,3 @@
-
 use crate::hardware::cpu::CPU;
 use crate::ram::bus::Bus;
 
@@ -28,13 +27,5 @@ mod tests {
         cpu.register_a = 10;
         cpu.interpret(vec![0xAA, 0x00]);
         assert_eq!(cpu.register_x, 10);
-    }
-
-    #[test]
-    fn test_0x_inx() {
-        let mut cpu = CPU::new();
-        cpu.register_x = 1;
-        cpu.interpret(vec![0xE8, 0x00]);
-        assert_eq!(cpu.register_x, 2);
     }
 }
