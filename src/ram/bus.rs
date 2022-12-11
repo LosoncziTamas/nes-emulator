@@ -15,11 +15,12 @@ pub struct Bus {
 
 impl Bus {
     pub fn new(rom: Rom) -> Self {
-        let ppu = NesPPU::new(rom.chr_rom, rom.screen_mirroring);
+        // TODO: do not clone here
+        let ppu = NesPPU::new(rom.chr_rom.clone(), rom.screen_mirroring);
 
         Bus {
             cpu_vram: [0; 2048],
-            rom: rom,
+            rom,
             ppu: ppu,
         }
     }
@@ -100,14 +101,14 @@ impl Mem for Bus {
 #[test]
 fn invalid_ram_access() {
     let invalid_ram_addr = 0x2457;
-    let bus = Bus::new();
+    let mut bus = Bus::new(Rom::new_dummy());
     assert_eq!(0, bus.read(invalid_ram_addr));
 }
 
 #[test]
 fn read_ram_addr() {
     let read_data: u8 = 0x24;
-    let mut bus = Bus::new();
+    let mut bus = Bus::new(Rom::new_dummy());
     bus.cpu_vram[1] = read_data;
     assert!(0x24 == bus.read(0x0001));
 }
@@ -116,7 +117,7 @@ fn read_ram_addr() {
 fn write_ram_addr() {
     let write_data: u8 = 0x42;
     let write_addr: u16 = 0x0001;
-    let mut bus = Bus::new();
+    let mut bus = Bus::new(Rom::new_dummy());
     bus.write(write_addr, write_data);
     assert!(0 == 0);
 }

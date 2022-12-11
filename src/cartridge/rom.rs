@@ -2,7 +2,7 @@ const NES_TAG: [u8; 4] = [0x4E, 0x45, 0x53, 0x1A];
 const PRG_ROM_PAGE_SIZE: usize = 16384;
 const CHR_ROM_PAGE_SIZE: usize = 8192;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Mirroring {
     Vertical,
     Horizontal,
@@ -17,6 +17,12 @@ pub struct Rom {
 }
 
 impl Rom {
+
+    // TODO: remove
+    pub fn new_dummy() -> Rom {
+        return Rom { prg_rom: vec![], chr_rom: vec![], mapper: 0, screen_mirroring: Mirroring::FourScreen };
+    }
+
    pub fn new(raw: &Vec<u8>) -> Result<Rom, String> {
        if &raw[0..4] != NES_TAG {
            return Err("File is not in iNES file format".to_string());

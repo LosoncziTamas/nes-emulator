@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use crate::cartridge::rom::Rom;
 use crate::common::mem_trait::Mem;
 use crate::ram::bus::Bus;
 use crate::nes_instructions::instruction_list::Codes;
@@ -80,7 +81,7 @@ impl CPU {
             program_counter: 0,
             register_x: 0,
             memory: [0; 0xFFFF],
-            bus: Bus::new(),
+            bus: Bus::new(Rom::new_dummy()),
         }
     }
 
