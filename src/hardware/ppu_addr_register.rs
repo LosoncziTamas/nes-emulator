@@ -1,52 +1,55 @@
 const MIRROR_DOWN_ADDRESS_START: u16 = 0x3fff;
+const MIRROR_MASK: u16 = 0b0011_1111_1111_1111;
 
 pub struct AddrRegister {
-    /// high byte first, low byte second
-    value: (u8, u8),
-    hi_ptr: bool,
+    high_byte: u8,
+    low_byte: u8,
+    high_byte_latch: bool,
 }
 
 impl AddrRegister {
     pub fn new() -> Self {
         AddrRegister {
-            value: (0, 0),
-            hi_ptr: true,
+            high_byte: 0,
+            low_byte: 0,
+            high_byte_latch: true,
         }
     }
+
     fn set(&mut self, data: u16) {
-        self.value.0 = (data >> 8) as u8;
-        self.value.1 = (data & 0xff) as u8;
+        self.high_byte = (data >> 8) as u8;
+        self.low_byte = (data & 0xff) as u8;
     }
 
     pub fn update(&mut self, data: u8) {
-        if self.hi_ptr {
-            self.value.0 = data;
+        if self.high_byte_latch {
+            self.high_byte = data;
         } else {
-            self.value.1 = data;
+            self.low_byte = data;
         }
 
         if self.get() > MIRROR_DOWN_ADDRESS_START {
-            self.set(self.get() & 0b11_1111_1111_1111);
+            self.set(self.get() & MIRROR_MASK);
         }
-        self.hi_ptr = !self.hi_ptr;
+        self.high_byte_latch = !self.high_byte_latch;
     }
 
-    pub fn increment(&mut self, inc: u8) {
-        let lo = self.value.1;
-        self.value.1 = self.value.1.wrapping_add(inc);
-        if lo > self.value.1 {
-            self.value.0 = self.value.0.wrapping_add(1);
+    pub fn increment(&mut self, value: u8) {
+        let low = self.low_byte;
+        self.low_byte = self.low_byte.wrapping_add(value);
+        if low > self.low_byte {
+            self.high_byte = self.high_byte.wrapping_add(1);
         }
         if self.get() > MIRROR_DOWN_ADDRESS_START {
-            self.set(self.get() & 0b11_1111_1111_1111);
+            self.set(self.get() & MIRROR_MASK);
         }
     }
 
     pub fn reset_latch(&mut self) {
-        self.hi_ptr = true;
+        self.high_byte_latch = true;
     }
 
     pub fn get(&self) -> u16 {
-        ((self.value.0 as u16) << 8) | (self.value.1 as u16)
+        ((self.high_byte as u16) << 8) | (self.low_byte as u16)
     }
 }
