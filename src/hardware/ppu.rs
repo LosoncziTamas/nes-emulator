@@ -40,11 +40,11 @@ impl NesPPU {
     }
 
     pub fn write_to_ppu_addr(&mut self, value: u8) {
-        self.addr.update(value);
+        self.addr.write(value);
     }
 
     pub fn write_to_ctrl(&mut self, value: u8) {
-        self.ctrl.update(value);
+        self.ctrl.write(value);
     }
 
     fn increment_vram_addr(&mut self) {

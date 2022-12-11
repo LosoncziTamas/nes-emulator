@@ -43,7 +43,7 @@ impl ControlRegister {
         }
     }
 
-    pub fn update(&mut self, data: u8) {
+    pub fn write(&mut self, data: u8) {
         self.bits = data;
     }
 }
