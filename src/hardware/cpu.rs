@@ -94,7 +94,6 @@ impl CPU {
     fn select_op_mode(&self, mode: &AddressingMode) -> u16 {
         let base = self.read_u16(self.program_counter);
         let pos = self.read(self.program_counter);
-        println!("{:?}", mode);
         match mode {
             AddressingMode::Immediate => self.program_counter,
             AddressingMode::ZeroPage => pos as u16,
