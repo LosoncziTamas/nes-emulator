@@ -72,7 +72,7 @@ fn handle_user_input(cpu: &mut CPU, event_pump: &mut EventPump) {
             } => {
                 cpu.write(0xff, 0x64);
             }
-            _ => { /* do nothing */ }
+            _ => { }
         }
     }
 }

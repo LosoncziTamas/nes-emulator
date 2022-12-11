@@ -20,7 +20,7 @@ impl Rom {
 
     // TODO: remove
     pub fn new_dummy() -> Rom {
-        return Rom { prg_rom: vec![], chr_rom: vec![], mapper: 0, screen_mirroring: Mirroring::FourScreen };
+        return Rom { prg_rom: vec![0], chr_rom: vec![0], mapper: 0, screen_mirroring: Mirroring::FourScreen };
     }
 
    pub fn new(raw: &Vec<u8>) -> Result<Rom, String> {
