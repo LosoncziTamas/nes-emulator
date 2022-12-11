@@ -1,5 +1,9 @@
 #![allow(unused)]
 
+
+#[macro_use]
+extern crate lazy_static;
+
 mod common;
 mod hardware;
 mod nes_instructions;
