@@ -23,5 +23,3 @@ pub fn count_address_bytes(address_mo: &AddressingMode) -> i8 {
         _ => panic!("Can't find Addressing mode to validate")
     }
 }
-
-
