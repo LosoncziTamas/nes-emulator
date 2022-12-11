@@ -1,12 +1,12 @@
 #![allow(unused)]
 
+use crate::cartridge::rom::Rom;
 use crate::common::mem_trait::Mem;
 use crate::ram::bus::Bus;
 use crate::nes_instructions::instruction_list::Codes;
 use crate::nes_instructions::addressing_mode::AddressingMode;
 
 const MEM_START: u16 = 0x8000;
-
 
 fn load_accumulator(cpu: &mut CPU) {
     cpu.program_counter += 1;
@@ -38,7 +38,6 @@ fn update_zero_and_negative_flags(cpu: &mut CPU, result: u8){
     }
 }
 
-
 fn make_code(u8op: u8) -> Codes {
     match u8op {
         0x00 => Codes::Brk,
@@ -61,7 +60,7 @@ pub struct CPU {
 }
 
 impl Mem for CPU {
-    fn read(&self, addr: u16) -> u8 {
+    fn read(&mut self, addr: u16) -> u8 {
         self.bus.read(addr)
     }
 
@@ -69,7 +68,7 @@ impl Mem for CPU {
         self.bus.write(addr, data)
     }
 
-    fn read_u16(&self, loc: u16) -> u16 {
+    fn read_u16(&mut self, loc: u16) -> u16 {
         self.bus.read_u16(loc)
     }
 
@@ -87,11 +86,11 @@ impl CPU {
             register_x: 0,
             register_y: 0,
             memory: [0; 0xFFFF],
-            bus: Bus::new(),
+            bus: Bus::new(Rom::new_dummy()),
         }
     }
 
-    fn select_op_mode(&self, mode: &AddressingMode) -> u16 {
+    fn select_op_mode(&mut self, mode: &AddressingMode) -> u16 {
         let base = self.read_u16(self.program_counter);
         let pos = self.read(self.program_counter);
         match mode {
